@@ -115,6 +115,7 @@ func (h *History) compute() *Metrics {
 	}
 
 	return &Metrics{
+		Results:     h.results[:numTotal],
 		PacketsSent: numTotal,
 		PacketsLost: numFailure,
 		Best:        float32(best),
