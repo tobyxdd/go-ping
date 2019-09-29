@@ -1,4 +1,4 @@
-module github.com/digineo/go-ping
+module github.com/tobyxdd/go-ping
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -14,3 +14,5 @@ require (
 	golang.org/x/sys v0.0.0-20181228144115-9a3f9b0469bb // indirect
 	gopkg.in/cheggaaa/pb.v1 v1.0.27
 )
+
+go 1.13
