@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	ping "github.com/digineo/go-ping"
+	ping "github.com/tobyxdd/go-ping"
 )
 
 var opts = struct {

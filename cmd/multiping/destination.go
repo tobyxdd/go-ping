@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	ping "github.com/digineo/go-ping"
+	ping "github.com/tobyxdd/go-ping"
 )
 
 type history struct {
