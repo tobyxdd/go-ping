@@ -16,16 +16,16 @@ type Result struct {
 
 // History represents the ping history for a single node/device.
 type History struct {
+	capacity int
 	results  []Result
-	count    int
-	position int
 	sync.RWMutex
 }
 
 // NewHistory creates a new History object with a specific capacity
 func NewHistory(capacity int) History {
 	return History{
-		results: make([]Result, capacity),
+		capacity: capacity,
+		results:  make([]Result, 0, capacity+1),
 	}
 }
 
@@ -33,19 +33,15 @@ func NewHistory(capacity int) History {
 func (h *History) AddResult(rtt time.Duration, err error) {
 	h.Lock()
 
-	h.results[h.position] = Result{RTT: rtt, Lost: err != nil}
-	h.position = (h.position + 1) % cap(h.results)
-
-	if h.count < cap(h.results) {
-		h.count++
+	h.results = append(h.results, Result{RTT: rtt, Lost: err != nil})
+	if len(h.results) > h.capacity {
+		h.results = h.results[1:]
 	}
 
 	h.Unlock()
 }
 
 func (h *History) clear() {
-	h.count = 0
-	h.position = 0
 }
 
 // ComputeAndClear aggregates the result history into a single data point and clears the result set.
@@ -66,7 +62,7 @@ func (h *History) Compute() *Metrics {
 
 func (h *History) compute() *Metrics {
 	numFailure := 0
-	numTotal := h.count
+	numTotal := len(h.results)
 	µsPerMs := 1.0 / float64(time.Millisecond)
 
 	if numTotal == 0 {
@@ -115,7 +111,7 @@ func (h *History) compute() *Metrics {
 	}
 
 	return &Metrics{
-		Results:     h.results[:numTotal],
+		Results:     h.results,
 		PacketsSent: numTotal,
 		PacketsLost: numFailure,
 		Best:        float32(best),
